@@ -1,0 +1,57 @@
+Predict Fertility using Swiss Dataset
+========================================================
+author: iskren89
+date: 24.12.2020
+autosize: true
+
+The Dataset
+========================================================
+The Swiss Fertility and Socioeconomic Indicators (1888) Data is available in R.
+
+The swiss dataset has 47 observations on 6 variables, each of which is in percent.
+All variables but ‘Fertility’ give proportions of the population.
+
+  - Fertility : lg ‘common standardized fertility measure’.
+  - Agriculture : % of males involved in agriculture as occupation.
+  - Examination	: % draftees receiving highest mark on army examination.
+  - Education	: % education beyond primary school for draftees.
+  - Catholic	: % ‘catholic’ (as opposed to ‘protestant’).
+  - Infant.Mortality : live births who live less than 1 year.
+
+A look at the model
+========================================================
+I run a simple linear model on the dataset, using four predictors.
+```{r, echo=FALSE}
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+data(swiss)
+model <- lm(Fertility ~ Agriculture + Education + Catholic + Infant.Mortality, data = swiss)
+```
+```{r, echo=FALSE}
+tab_model(model)
+```
+The app
+========================================================
+The app takes input from the user via the use of the four sliders and returns the result of the predictive linear model. For example, using the default values: 
+```{r}
+round(predict(model,
+newdata=data.frame(Agriculture=45,Education=30,
+                   Catholic=50,Infant.Mortality=20)), digits=1)
+```
+The plots
+========================================================
+The app also allows to see the relationship between Fertility
+and each of the four factors by clicking on the tabs.  
+```{r, echo=FALSE}
+par(mfrow=c(2,2))
+plot(swiss$Agriculture,swiss$Fertility, xlab="Agriculture",
+             ylab="Fertility", bty="n",pch=16, xlim=c(0,90), ylim=c(0,120))
+plot(swiss$Education,swiss$Fertility, xlab="Education",
+             ylab="Fertility", bty="n",pch=16, xlim=c(0,60), ylim=c(0,120))
+plot(swiss$Catholic,swiss$Fertility, xlab="Catholic",
+             ylab="Fertility", bty="n",pch=16, xlim=c(0,100), ylim=c(0,120))
+plot(swiss$Infant.Mortality,swiss$Fertility, xlab="Infant.Mortality",
+             ylab="Fertility", bty="n",pch=16, xlim=c(10,30), ylim=c(0,120))
+```
+
